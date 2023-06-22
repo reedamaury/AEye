@@ -1,11 +1,23 @@
 %chdir("C:\Users\asteinhardt\Desktop\upscaling_Data_Highway_Bloom\Both");%% aos 6/14/23
 a=readtable("Both_10.10.10.66_"+num2str(1716)+".csv");opts = detectImportOptions("Both_10.10.10.66_"+num2str(1716)+".csv");
-    hummaq=["range_m_","intensity","laserRow","laserCol"] ;opts.SelectedVariableNames =hummaq;    
+hummaq=["range_m_","intensity","laserRow","laserCol"] ;opts.SelectedVariableNames =hummaq;    
+
 RAD=int16(40);thresh=int16(80);
-for i=1716:1724;X{i-1715}=table2array(readtable("Both_10.10.10.66_"+num2str(i)+".csv",opts)); %#ok<*SAGROW>convert to integ 0-65535
- Xint=X{i-1715}(:,[3,4,1,2]);k=find(diff(Xint(:,1))>0,1,'first');%flicker bug removal
- if(~isempty(k)); Xint(k+1:end,:)=[];end%mapped to uniform grid
- Xint(:,3)= (min(256,Xint(:,3))*64);X{i-1715}=Xint;%range now unit16, int unit l, 6 echo, 
+for i=1716:1724;
+    % taking selected variables from each excel file and putting it into the cell array X
+    X{i-1715}=table2array(readtable("Both_10.10.10.66_"+num2str(i)+".csv",opts)); %#ok<*SAGROW>convert to integ 0-65535
+    
+    % creating a matrix from current cell array (note that the columns have
+    % been rearranged)
+    Xint=X{i-1715}(:,[3,4,1,2]);
+
+    % returns the indices where the previous laserrow value is not the same as
+    % the next laserrow value (there are ~400 rows, 880 to 484)
+    k=find(diff(Xint(:,1))>0,1,'first');%flicker bug removal
+    if(~isempty(k)); 
+        Xint(k+1:end,:)=[];
+    end %mapped to uniform grid
+    Xint(:,3)= (min(256,Xint(:,3))*64);X{i-1715}=Xint;%range now unit16, int unit l, 6 echo, 
 end%% we now have for each return up to 4 entries reading data,  curat first tick is higher it is building plumbingdone input read
 %%***********************************************************************
 frame=cell(0);
