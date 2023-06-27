@@ -2,7 +2,7 @@
 
 % Section 1: Load CSV data and process the data
 frame=cell(0);
-for i=1716:1724;
+for i=1716:1724
     % Load selected variables from CSV file
     opts = detectImportOptions("Both_10.10.10.66_"+num2str(i)+".csv");
     opts.SelectedVariableNames = ["range_m_","intensity","laserRow","laserCol"];
