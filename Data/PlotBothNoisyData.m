@@ -64,6 +64,8 @@ for j=1:length(X); % for each frame
     frame{j}=cell2mat(xx(:));
 end
 %% frame{j} is frame with all echos, in range, intensity, el, az (deg)
+frame = add_noise(frame,1);
+
 %% convert to x y z:
 xyz = cell(0);
 xyz_road = cell(0);
@@ -79,8 +81,7 @@ for i=1:length(frame)
     z=r.*sind(fee);
     I=Q(:,2);
     I=min(1000,I)/100;
-    shot_numbers = frame(:,5);
-    points = [x,y,-z,I,shot_numbers];
+    points = [x,y,-z,I];
     xyz{i} = points;
     road_constraints = points(:,1)<120 & points(:,2)>=-3.5 & points(:,2)<=1.5 & points(:,3)>=-2 & points(:,3)<=-1;
     xyz_road{i} = points(road_constraints,:);
