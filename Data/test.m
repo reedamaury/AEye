@@ -1,11 +1,11 @@
 clear; 
-[frame, xx] = obtainframedata(1716, 1724, "Both_10.10.10.66_%d.csv");
-frames_with_noise = add_noise1(frame, 1);
- 
+[frame, xx] = obtainframedata(42720, 42734, "Korea_Driving_Data_10.10.10.48_%d.csv");
+[xyz,xyz_road] = spherical2cartesian(frame);
+plot_xyz(xyz, 1)
 
-[xyz,xyz_road] = spherical2cartesian(frames_with_noise);
-plot_xyz(xyz_road, 2)
+
 % [frames_with_noise,frames_with_noise_road] = spherical2cartesian(frame);
+% [xyz,xyz_road] = spherical2cartesian(frames_with_noise);
 % figure; 
 % scatter3(frames_with_noise{1}(:,1),frames_with_noise{1}(:,4),frames_with_noise{1}(:,3),10,frames_with_noise{1}(:,2),'filled');
 % plot_frames_with_noise(frames_with_noise_road, 2)

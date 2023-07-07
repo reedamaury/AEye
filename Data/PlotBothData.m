@@ -41,7 +41,7 @@ for j=1:length(X); % for each frame
             % intensity values...why might there be multiple
             % range-intensity values for each laser? because a single
             % shot/pulse can reflect off of multiple surfaces/objects at
-            % varying distances.
+            % varying distances. These are echoes
 
             if(~isempty(temp))
                try
