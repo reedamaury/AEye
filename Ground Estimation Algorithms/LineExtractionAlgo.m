@@ -1,4 +1,4 @@
-% [frameboth, xxb] = obtainframedata(1715, 1724, "Both_10.10.10.66_%d.csv");
+ [frameboth, xxb] = obtainframedata(1715, 1724, "Both_10.10.10.66_%d.csv");
 % [frameboth, xxb] = obtainframedata(42720, 42734, "Korea_Driving_Data_10.10.10.48_%d.csv");
 
 xyzb = spherical2cartesian(frameboth);
@@ -39,7 +39,7 @@ all_ground_points = [];
 all_nonground_points = [];
 
 distance_threshold = 0.03; 
-lidar_height = -2.1;
+lidar_height = -2;
 
 tic;
 % Assign points to bins
@@ -83,9 +83,9 @@ for i = 1:length(segments)
         continue;
     end
 
-    r = size(prototype_points, 1);
+    n = size(prototype_points, 1);
     
-    if r <= 2 
+    if n <= 2 
         break; 
     end
     % Initialize
@@ -95,7 +95,7 @@ for i = 1:length(segments)
     ii = 1;
     
     
-    while ii <= r - 1
+    while ii <= n - 1
         % Start with 5 points, or fewer if there are not enough left
         num_points = min(n - ii + 1, 4);
 
@@ -121,9 +121,9 @@ for i = 1:length(segments)
     
             % Check the conditions && abs(intercept-(-2)) <= 0.6 slope 0.05
             % rmes 0.15
-            if abs(slope) <= 0.05 && rmse <= 0.15  && abs(intercept-(-2)) <= 0.6
+            if abs(slope) <= 0.05 % && rmse <= 0.15  && abs(intercept-(-2)) <= 0.6
                 % The line meets the conditions, so check the next point
-                if ii + num_points <= r && abs(prototype_points(ii+num_points, 6) - (slope * prototype_points(ii+num_points, 1) + intercept)) <= 0.025
+                if ii + num_points <= n && abs(prototype_points(ii+num_points, 6) - (slope * prototype_points(ii+num_points, 1) + intercept)) <= 0.025
                     % The next point is close enough, so add it and continue
                     num_points = num_points + 1 ;
                 else
@@ -140,9 +140,9 @@ for i = 1:length(segments)
                 % next point, but only if slope between current point and
                 % it is within a threshold (stops us from moving on to some
                 % peak)
-               num_points = 0; 
+               num_points = 1; 
                nn = 1; 
-               while ii+nn <= r && abs((prototype_points(ii,6)-prototype_points(ii+nn,6))/(prototype_points(ii,1)-prototype_points(ii+nn,1))) > 0.1
+               while ii+nn <= n && abs((prototype_points(ii,6)-prototype_points(ii+nn,6))/(prototype_points(ii,1)-prototype_points(ii+nn,1))) > 0.1
                    nn = nn + 1; 
                end
                ii = ii + nn; 
@@ -161,7 +161,7 @@ for i = 1:length(segments)
        %     end
        end
 
-       if ii + num_points > r
+       if ii + num_points > n
            break
        else 
            ii = ii + num_points;
@@ -247,8 +247,8 @@ t=toc
 % % After the loop, plot all ground and nonground points on a single figure
 figure;
 hold on;
-plot_xyz_no_i([all_ground_points(:,4), all_ground_points(:,5), all_ground_points(:,6)], 140, "r");
-plot_xyz_no_i([all_nonground_points(:,4), all_nonground_points(:,5), all_nonground_points(:,6)], 140, "b");
+plot_xyz_no_i([all_ground_points(:,4), all_ground_points(:,5), all_ground_points(:,6)], 120, "r");
+plot_xyz_no_i([all_nonground_points(:,4), all_nonground_points(:,5), all_nonground_points(:,6)], 120, "b");
 % Add a legend
 legend('Ground Points', 'Non-Ground Points');
 
